@@ -12,11 +12,12 @@ import sys
 import socket
 import time
 import traceback
-ipv4_address = '127.0.0.1'
-port = 7027
+ipv4_address = '192.168.0.111'
+port = 7000
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind((ipv4_address, port))
+wait_time = 20
 ###################
 
 # Server Game Info
@@ -72,24 +73,21 @@ def update():
 
 def send():
     manip = ''
+    for j in players:
+        manip = ''
+        manip += str(j.box.rect.centerx) + ',' + str(j.box.rect.centery)
+        manip += ',' + str(j.box.color.r) + ',' + str(j.box.color.g)
+        manip += ',' + str(j.box.color.b)
+        manip += '|'
+    manip += '='
+    for j in objectives:
+        manip += str(j.box.rect.centerx) + ',' + str(j.box.rect.centery)
+        manip += ',' + str(j.box.color.r) + ',' + str(j.box.color.g)
+        manip += ',' + str(j.box.color.b)
+        manip += '|'
+    manip += '}'
     for i in players:
-        for j in players:
-            manip = ''
-            manip += str(j.box.rect.centerx) + ',' + str(j.box.rect.centery)
-            manip += ',' + str(j.box.color.r) + ',' + str(j.box.color.g)
-            manip += ',' + str(j.box.color.b)
-            manip += '|'
-            i.connection.send(str.encode(manip))
-        i.connection.send(b'=')
-        for j in objectives:
-            manip = ''
-            manip += str(j.box.rect.centerx) + ',' + str(j.box.rect.centery)
-            manip += ',' + str(j.box.color.r) + ',' + str(j.box.color.g)
-            manip += ',' + str(j.box.color.b)
-            manip += '|'
-            i.connection.send(str.encode(manip))
-        i.connection.send(b'}')
-
+        i.connection.send(manip.encode('ascii'))
 
 def main():
     while True:
@@ -97,7 +95,7 @@ def main():
             a = 0
             while a != 1:
                 try:
-                    sock.settimeout(20)
+                    sock.settimeout(wait_time)
                     sock.listen(0)
                     print("Started Connection!")
 

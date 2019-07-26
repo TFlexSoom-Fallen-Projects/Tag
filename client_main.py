@@ -35,7 +35,7 @@ def update():
       quit()
    direction += '}'
    s.send(direction.encode("ascii"))
-   print(direction)
+   #print(direction)
    
     
 
